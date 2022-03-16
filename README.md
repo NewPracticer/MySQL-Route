@@ -8,7 +8,7 @@ MySQL学习路线
 ##### SQL VS NOSQL
 + 关系型数据库
     + 关系型数据库的特点
-        +  数据结构花存储在二维表中
+        +  数据结构化存储在二维表中
         +  支持事务的原子性，一致性，隔离性，持久性
         +  支持使用SQL语言对存储在其中的数据进行操作
     + 关系型数据库的适用场景
@@ -27,11 +27,15 @@ MySQL学习路线
 + 关系数据库选型原则
     + 数据库使用的广泛性
     + 数据库的可扩展性
+        + 支持基于二进制日志的逻辑复制
+        + 存在多种第三方数据库中间层，支持读写分离及分库分表
     + 数据库的安全性和稳定性
         +  MySQL主从复制集群可达到99%的可用性
         +  配合主从复制高可用架构可以达到99.99%的可用性 
         +  支持对存储在MySQL上的数据进行分级安全控制
     + 数据库所支持的系统
++ 数据库结构设计
+    + 业务分析-> 逻辑设计 -> 数据类型-> 对象命名 -> 建立库表
 + 宽表模式存在的问题（适用于列存储的数据报表应用）
     +  数据插入异常： 部分数据由于缺失主键信息而无法写入表中 
     +  数据更新异常： 修改一行中某列的值时，同时修改了多行数据
@@ -43,26 +47,38 @@ MySQL学习路线
     + 第三范式： 表中的非主键列之间不能相互依赖
 + MySQL常见的存储引擎
     + MYISAM： MySQL 5.6之前的默认引擎，最常用的非事务型存储引擎
-    + CSV：　以CSV格式存储的非事务型存储引擎
+    + CSV：以CSV格式存储的非事务型存储引擎
     + Archive ： 只允许查询和新增数据而不允许修改的非事务型存储引擎
     + Memory : 是一种易失性非事务型存储引擎
     + INNODB ： 最常用的事务型存储引擎 
         +  事务型存储引擎支持ACID 
-        +  数据按逐渐聚集存储
+        +  数据按主键聚集存储
         +  支持行级锁及MVCC 
         +  支持Btree 和自适应hash 索引
         +  支持全文和空间索引 
 + 如何为数据选择合适的数据类型
     +  有限选择符合存储数据需求最小的数据类型
     +  谨慎使用ENUM，TEXT字符串类型
-    + 同财务相关的数值型数据，必须使用decimal类型。
-+ 如何为表和列选择适合的表明
+    +  同财务相关的数值型数据，必须使用decimal类型。
+    +  decimal类型存储是9个字节。小数点前是4位，小数点后是4位，小数点占一位
++ 如何为表和列选择适合的名字
     +  所有数据库对象名称必须使用小写字母可选用下划线分割
     +  所有数据库对象名称定义禁止使用MySQL保留关键字
     +  数据库对象的命名要能做到见名识义，并且最好不要超过32个字
     +  临时库表必须以tmp为前缀并以日期为后缀
     +  用于备份的库，表必须以bak为前缀并以日期为后缀
     +  所有存储相同数据的列明和列类型必须一致 
++ DCL (Data Control Language) 访问控制语句
+    + 建立数据库账号：create user
+        + CREATE USER [IF NOT EXISTS] user [auth_option] [, user [auth_option]] ... [REQUIRE {NONE | tls_option [[AND] tls_option] ...}] [WITH resource_option [resource_option] ...]
+    [password_option | lock_option] ...
+    + 对用户授权：grant 
+        +  priv_type [(column_list)]
+      [, priv_type [(column_list)]] ... ON [object_type] priv_level TO user [auth_option] [, user [auth_option]] ... [REQUIRE{NONE | tls_option [[AND] tls_option] ...}] [WITH {GRANT OPTION | resource_option} ...]
+    + 收回用户权限：revoke
+        +  REVOKE priv_type [(column_list)] [, priv_type [(column_list)]] ... ON [object_type] priv_level FROM user [, user] ...
+    
+
     
     
 #### Mysql知识点

@@ -77,9 +77,97 @@ MySQL学习路线
       [, priv_type [(column_list)]] ... ON [object_type] priv_level TO user [auth_option] [, user [auth_option]] ... [REQUIRE{NONE | tls_option [[AND] tls_option] ...}] [WITH {GRANT OPTION | resource_option} ...]
     + 收回用户权限：revoke
         +  REVOKE priv_type [(column_list)] [, priv_type [(column_list)]] ... ON [object_type] priv_level FROM user [, user] ...
-    
-
-    
++ DDL(data definition lanuage)
+    + 建立/修改/删除数据库：create/alter/drop database
+        + CREATE {DATABASE | SCHEMA} [IF NOT EXISTS] db_name [create_option] ...
+    + 建立/修改/删除表 ： create/alter/drop table
+        + CREATE [TEMPORARY] TABLE [IF NOT EXISTS] tbl_name
+    (create_definition,...)
+    [table_options]
+    [partition_options]
+    + 建立/删除索引：create/drop index
+    + 清空表：truncate table 
+    + 重命名表：rename table
+    + 建立/修改/删除试图：create/alter/drop view
++ DML (data manipulation language)
+    + 新增表中数据：insert into 
+        + INSERT [LOW_PRIORITY | DELAYED | HIGH_PRIORITY] [IGNORE] [INTO] tbl_name [PARTITION (partition_name [, partition_name] ...)] [(col_name [col_name] ...)]{VALUES | VALUE} (value_list) [, (value_list)] ...[ON DUPLICATE KEY UPDATE assignment_list]
+        + 确认要把数据插入到那个表中 
+        + 确认表的数据库结构，那些列不能为NULL，那些列可以为NULL,对于不能为NULL的列是否有默认值（class_name）
+        + 确认对应插入列的插入之的清单 values
+    + 删除表中数据：delete
+        + DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name[PARTITION (partition_name [, partition_name] ...)][WHEREwhere_condition][ORDER BY ...][LIMIT row_count]
+        + 确定要删除的数据存储在那张表中 From 子句
+        + 确认删除数据的过滤条件 where字句
+        + 确认是否只删除有限条数据 ORDER BY ... LIMIT 子句 
+    + 修改表中的数据： update
+        + UPDATE [LOW_PRIORITY] [IGNORE] table_reference SET assignment_list[WHERE where_condition][ORDER BY ...][LIMIT row_count]
+        + 确定要更新的数据存储在那张表中 UPDATE子句
+        + 确定要列新的列及值 SET子句
+        + 确认更新数据的条件 WHERE子句 
+    + 查询表中的数据:  select 
+        + SELECT [ALL | DISTINCT | DISTINCTROW ] [HIGH_PRIORITY] [STRAIGHT_JOIN][SQL_SMALL_RESULT] [SQL_BIG_RESULT] [SQL_BUFFER_RESULT] [SQL_CACHESQL_NO_CACHE] [SQL_CALC_FOUND_ROWS] select_expr [, select_expr] ...[into_option] [FROM table_references [PARTITION partition_list]] [WHERE where_condition] [GROUP BY {col_name | expr | position} [ASC | DESC], ... [WITH ROLLUP]] [HAVING where_condition] [ORDER BY {col_name | expr | position}[ASC | DESC], ...] [LIMIT {[offset,] row_count | row_count OFFSET offset}][PROCEDURE procedure_name(argument_list)] [into_option][FOR UPDATE | LOCK IN SHARE MODE]
+        +  首先确定我们要获取的数据存在那些表中
+        +  其次要确定我们要取现表中的那些列
+        +  确认是否需要对表中的数据进行过滤
+    + MySQL比较运算符
+        + != < > >= <= 
+        + between and  列的值大于等于最小值，小于等于最大值
+        + IS NULL,IS NOT NULL 判断列的值是否为NULL
+        + LIke NOT LIKE  %代表任何数量的字符，_代表任何一个字符
+        + IN ,NOT IN  判断列的值是否在指定的范围内
+        + AND && AND运算符两边的表达式都为真时，返回的结果才为真
+        + OR || OR运算符两边的表达式有一条为真，返回的结果就为真
+        + XOR XOR运算符两边的表达式一真一假时返回真，两真两假为假
+        + 任何运算符和NULL值运算结果都为NULL 
+    + 使用JOIN关联多个表
+        + INNER JOIN 
+            + select <select_list> from table a inner join table b on a.key = b.key
+        + OUTE JOIN
+            + select <select_list> from table a left join table b on a.key = b.key
+            + select <select_list> from table a left join table b on a.key = b.key where b.key IS NULL 
+            + select <select_list> from table a right join table b on a.key = b.key
+            + select <select_list> from table a right join table b on a.key = b.key where b.key IS NULL 
+    + GROUP BY ... HAVING 子句的作用
+        +  把结果集按照某些列分成不同的组，并对分组后的数据进行聚合操作
+            +  select level_name,count(*) from db group by level name
+        +  可以通过可选的having子句对聚合后的数据进行过滤 
+            +  select class_name,level_name,count(*) from course a join class b on b.class_id = a.class_id 
+            join level c on c.level_id = a. level_id 
+            group by class_name,level_name having count(*) >3 
+    + 常用的聚合函数
+        + count(*) 计算符合条件的数据行数
+        + sum 计算表中符合条件的数值列的合计算
+        + AVG() 计算表中符合条件的数值列的平均值
+        + MAX() 计算表中符合条件的任意列中数据的最大值
+        + MIN() 计算表中符合条件的任意列中数据的最小值
+    + 使用Order by字句对查询结果进行排序
+        + 使用order by 字句是对查询结果进行排序的最安全方法
+        + 列名后增加ASC关键字指定按该列的升序进行排序，或是指定DESC关键字指定该列的降序进行排序
+        + Order by 子句 也可以使用select子句中未出现的列或是函数
+    + 使用Limit字句限制返回结果集的行数
+        + 常用语数据列表分页
+        + 一定要和order by 子句配合使用
+        + limit 起始偏移量，结果集的行数
+    + 创建视图
+        + CREATE[OR REPLACE][ALGORITHM = {UNDEFINED | MERGE | TEMPTABLE}][DEFINER = user][SQL SECURITY { DEFINER | INVOKER }]VIEW view_name[(column_list)]AS select_statement[WITH [CASCADED | LOCAL] CHECK OPTION]
+    + 系统函数
+        + CURDATE()/CURTIME() 返回当前日期/返回当前时间
+        + NOW() 返回当前的日期和时间
+        + DATE_FORMAT(date,fmt) 按照fmt的格式，对日期date进行格式化
+        + DATEDIFF(date1,date2)返回date1和date2两个日期相差的天数
+        + DATE_ADD(date,inter val expr unit)对给定的日期增加或减少指定的时间单元
+        + EXTRACT(unit FROM date) 返回日期date的指定部分
+        + UNIX_TIMESTAMP 返回unix时间戳
+        + FROM_UNIXTIME() 把unix时间戳转换为日期时间
+    + 常用的字符串函数
+        + CONCAT(str1,str2) 把字符串str1,str2连接成一个字符串
+        + CONCAT_WS(sep,str1,str2)用指定的分隔符sep连接字符串
+        + LEFT(str,len)/RIGHT(str,len) 从字符串左/右边起返回len长度的子字符串
+        + SUBSTRING(str,pos,[len]) 从字符串str的pos位置起返回长度为len的子串
+    + 其他常用函数
+        + ROUND(X,D) 四舍五入
+        + RADN() 返回在0和1之间的随机数
     
 #### Mysql知识点
 + MySQL中的SQL执行
@@ -94,6 +182,10 @@ MySQL学习路线
         + 执行器：在执行之前需要判断该用户是否具备权限，如果具备权限就执行SQL查询并返回结果。
     
 #### MySQL学习路线
-1. [SQL必知必会](https://time.geekbang.org/column/intro/100073201)
-2. [Mysql45讲](https://time.geekbang.org/column/intro/100020801)
+1. [零基础入门](https://coding.imooc.com/class/332.html)
+2. [MySQL必知必会]()
+3. 必知必会
+    1. [SQL必知必会](https://time.geekbang.org/column/intro/100073201)
+    2. 书籍：MySQL必知必会
+4. [Mysql45讲](https://time.geekbang.org/column/intro/100020801)
 

@@ -5,7 +5,6 @@ MySQL学习路线
 
 
 #### 从零开始MySQL 
-##### SQL VS NOSQL
 + 关系型数据库
     + 关系型数据库的特点
         +  数据结构化存储在二维表中
@@ -168,6 +167,108 @@ MySQL学习路线
     + 其他常用函数
         + ROUND(X,D) 四舍五入
         + RADN() 返回在0和1之间的随机数
++ 优化SQL 
+    + 发现问题
+        + 分析慢查询日志发现存在问题的SQL
+            + 配置慢查询日志
+                + set global show_query_log = [ON|OFF]
+                + set global show_query_log_file = /sql_log/slowlog.log
+                + set global long_query_time = xx.xxx秒
+                + set global log_queries_not_using_indexed = [ON|OFF]
+            + 分析mysql慢查询日志
+                + mysqldumpslow[OTPS][LOGS]
+                + pt-query-digest[OPTIONS][FILES][DSN] 
+        + 数据库实时监控长时间运行的SQL
+            +  select id,user,host,DB,command,time,state,info from db.PROCESSLIST where time >60 
+    + 分析执行计划
+        + explain SQL 
+            + ID
+                + ID 表示查询执行的顺序
+                + ID 相同时由上到下执行
+                + ID 不同时，由大到小执行
+            + select_type
+                + SIMPLE 不包含子查询或者UNION操作的查询
+                + PRIMARY 查询中如果包含任何子查询，那么最外层的查询则被标记为PRIMARY
+                + SUBQUERY select 列表中的子查询
+                + DEPENDENT SUBQUERY 依赖外部结果的子查询
+                + UNION union操作的第二个或者之后的查询的值为union
+                + DEPENDENT UNION 当 UNION做为子查询时，第二或者第二后的查询的select_type值
+                + UNION RESULT UNION产生的结果集
+                + DERIVED 出现在FROM子句中的子查询
+            + partitions:
+                + 对于分区表，显示查询的分区ID
+                + 对于非分区表，显示NULL
+            + type
+                + system ： 这是const联接类型的一个特例，当查询的表只有一行时使用
+                + const: 表中有且只有一个匹配的行时使用，如对主键或是唯一索引的查询，这是效率最高的联接方式
+                + eq_ref:唯一索引或主键查找，对于每个索引键，表中只有一条记录与之匹配
+                + ref  非唯一索引查找，分会匹配某个单独值的所有行
+                + ref_or_null 类似于ref类型的查询，但是附加了对NULL值列的查询
+                + index_merge 该联接类型表示使用了索引和并优化方法
+                + range 索引范围扫描，常见于between ＜　＞这样的查询条件
+                + index FULL index SCAN 全索引扫描，同ALL的区别是，遍历的是索引树
+                + ALL FULL TABLE SCAN 全表扫描 这是效率最差的链接方式
+            + possible_key:指出查询中可能会用到的索引
+            + key:指出查询时实际用到的索引
+            + key_len：实际使用索引的最大长度
+            + ref : 指出那些列或常量被用于索引查找
+            + row : 根据统计信息预估的扫描的行数
+            + filtered：表示返回结果的行数占需读取行数的百分比
+    + 优化索引
+        + 索引的作用：指导存储引擎如何快速的查找到所需要的数据
+        + Innodb 支持的索引
+            + Btree索引
+                + 以B+树的结构存储索引数据
+                + 适用于全值匹配的查询
+                + 适合处理范围查找
+                + 从索引的最左侧开始匹配查找列
+                + 限制：
+                    +  只能从最左侧开始按索引键的顺序使用索引，不能跳过索引键
+                    + NOT IN 和 <>操作无法使用索引
+                    + 索引列上不能使用表达式或是函数
+            + 自适应HASH索引
+            + 全文索引
+            + 空间索引
+        + 如何建立索引
+            + 应该在where子句中，或者 具有筛选性的列 建立索引
+            + 包含在ORDER BY. GROUP BY 、DISTINCT中的字段
+            + 多表JOIN的关联列
+        + 如何选择复合索引键的顺序
+            + 区分度最高的列放在联合索引的最左侧
+            + 使用最频繁的列放到联合索引的最左侧
+            + 尽量把字段长度小的列放在联合索引列的最左侧
+    + 改写SQL
+    + 数据库垂直切分，数据库水平切分
++ SQL
+    + 事务
+        + 原子性：一个事务中的所有操作，要么全部完成，要么全部不完成，不会结束在中间某个环节
+        + 一致性：在事务开始之前和事务结束以后，数据库的完整性没有被破坏
+        + 隔离性：事务的隔离性要求每个读写事务的对象与其他事务的操作对象相互分离，即该事务提交前对其它事务都不可见
+        + 事务一旦提交了，其结果就是永久性，就算发生了宕机等事故，数据库也能将数据恢复。
+    + 并发带来的问题
+        + 更新丢失：最后的更新覆盖了其他事务之前的更新，而事务之间并不知道，发生更新丢失。
+        + 脏读： 一个事务读取了另一个事务未提交的数据
+        + 不可重复读：一个事务前后两次读取的同一数据不一致
+        + 幻读：一个事务两次查询的结果记录数不一致
+    + Innodb的隔离级别
+        + 顺序读
+        + 可重复读
+        + 读已提交
+        + 读未提交
+    + Innodb中的锁
+        + 查询需要对资源共享锁
+        + 数据修改需要对资源加排它锁
+        + 阻塞
+            + 成因：
+                + 由于不同锁之间的兼容关系，造成的一事务需要等待另一个事务释放所占用的资源的现象
+            + 处理方法
+                + 终止占用资源的事务
+                + 优化占用资源事务的SQL，使其尽快释放资源
+        + 死锁
+            + 成因：
+                + 并行执行的多个事务相互之间占有了对方所需要的资源
+            
+
     
 #### Mysql知识点
 + MySQL中的SQL执行
@@ -183,9 +284,12 @@ MySQL学习路线
     
 #### MySQL学习路线
 1. [零基础入门](https://coding.imooc.com/class/332.html)
-2. [MySQL必知必会]()
+2. [MySQL必知必会](https://time.geekbang.org/column/intro/100073201?tab=catalog)
 3. 必知必会
     1. [SQL必知必会](https://time.geekbang.org/column/intro/100073201)
     2. 书籍：MySQL必知必会
 4. [Mysql45讲](https://time.geekbang.org/column/intro/100020801)
+5. SQL练习网站：
+    1. https://www.nowcoder.com/exam/oj?tab=SQL%E7%AF%87&topicId=199
+    2. https://leetcode-cn.com/problemset/database/
 

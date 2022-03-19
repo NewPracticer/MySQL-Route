@@ -267,7 +267,31 @@ MySQL学习路线
         + 死锁
             + 成因：
                 + 并行执行的多个事务相互之间占有了对方所需要的资源
-            
+            + 如何发现：
+                + set global innodb_print_all_deadlocks = on
+            + 处理方法：
+                + 数据库自行回滚占用资源少的事务
+                + 并发事务按照相同顺序占有资源
+#### MySQL必知必会
+通过一个实战项目使用SQL语句学习使用
+
++ 创建
+    + -- 创建数据库 CREATE DATABASE demo； 
+    + -- 删除数据库 DROP DATABASE demo； 
+    + -- 查看数据库 SHOW DATABASES; 
+    + -- 创建数据表：CREATE TABLE demo.test ( barcode text, goodsname text, price int );
+    + -- 查看表结构 DESCRIBE demo.test; 
+    + -- 查看所有表 SHOW TABLES; 
+    + -- 添加主键 ALTER TABLE demo.test ADD COLUMN itemnumber int PRIMARY KEY AUTO_INCREMENT;
++ 数据类型
+    + 由于实际存储的长度不确定，MySQL 不允许 TEXT 类型的字段做主键。遇到这种情况，你只能采用 CHAR(M)，或者 VARCHAR(M)。
+    + -- 修改字段类型语句 ALTER TABLE demo.goodsmaster MODIFY COLUMN price DOUBLE; 
+    + -- 计算字段合计函数： SELECT SUM(price) FROM demo.goodsmaster;
+    + -- 在一个已经存在的表基础上，创建一个新表 CREATE demo.importheadhist LIKE demo.importhead; 
+    + -- 修改表的相关语句 
+        + ALTER TABLE 表名 CHANGE 旧字段名 新字段名 数据类型; 
+        + ALTER TABLE 表名 ADD COLUMN 字段名 字段类型 FIRST|AFTER 字段名; 
+        + ALTER TABLE 表名 MODIFY 字段名 字段类型 FIRST|AFTER 字段名;
 
     
 #### Mysql知识点

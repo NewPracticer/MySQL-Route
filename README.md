@@ -292,7 +292,36 @@ MySQL学习路线
         + ALTER TABLE 表名 CHANGE 旧字段名 新字段名 数据类型; 
         + ALTER TABLE 表名 ADD COLUMN 字段名 字段类型 FIRST|AFTER 字段名; 
         + ALTER TABLE 表名 MODIFY 字段名 字段类型 FIRST|AFTER 字段名;
-
++ 数据操作
+    + INSERT INTO 表名 [(字段名 [,字段名] ...)] VALUES (值的列表); INSERT INTO 表名 （字段名）
+      SELECT 字段名或值
+      FROM 表名
+      WHERE 条件
+      DELETE FROM 表名
+      WHERE 条件
+      UPDATE 表名
+      SET 字段名=值 WHERE 条件
+      SELECT *|字段列表
+      FROM 数据源
+      WHERE 条件
+      GROUP BY 字段
+      HAVING 条件
+      ORDER BY 字段
+      LIMIT 起始点，行数
+    + INSERT INTO demo.goodsmaster SELECT * FROM demo.goodsmaster1 as a ON DUPLICATE KEY UPDATE barcode = a.barcode,goodsname=a.goodsname;
+    + SELECT b.membername,c.goodsname,a.quantity,a.salesvalue,a.transdate -> FROM demo.trans AS a -> JOIN demo.membermaster AS b -> JOIN demo.goodsmaster AS c -> ON (a.cardno = b.cardno AND a.itemnumber=c.itemnumber);
++ 连接查询
+    + -- 定义外键约束：
+    CREATE TABLE 从表名
+    (
+    字段 字段类型
+    .... CONSTRAINT 外键约束名称
+    FOREIGN KEY (字段名) REFERENCES 主表名 (字段名称) );ALTER TABLE 从表名 ADD CONSTRAINT 约束名 FOREIGN KEY 字段名 REFERENCES 主表名 （字段
+    + 连接查询
+        +  SELECT 字段名 FROM 表名 AS a JOIN 表名 AS b ON (a.字段名称=b.字段名称); 
+        +  SELECT 字段名 FROM 表名 AS a LEFT JOIN 表名 AS b ON (a.字段名称=b.字段名称); 
+        +  SELECT 字段名 FROM 表名 AS a RIGHT JOIN 表名 AS b ON (a 字段名称=b 字段名称);
+     
     
 #### Mysql知识点
 + MySQL中的SQL执行

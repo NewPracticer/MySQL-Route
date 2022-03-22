@@ -321,6 +321,11 @@ MySQL学习路线
         +  SELECT 字段名 FROM 表名 AS a JOIN 表名 AS b ON (a.字段名称=b.字段名称); 
         +  SELECT 字段名 FROM 表名 AS a LEFT JOIN 表名 AS b ON (a.字段名称=b.字段名称); 
         +  SELECT 字段名 FROM 表名 AS a RIGHT JOIN 表名 AS b ON (a 字段名称=b 字段名称);
++ 条件语句 where 和 having 
+    +  如果需要通过连接从关联表中获取需要的数据，WHERE 是先筛选后连接，而 HAVING 是先连接后筛选。
+    +  在需要对数据进行分组统计的时候，HAVING 可以完成 WHERE 不能完成的任务。
+    +  where 先筛选数据再关联，执行效率高，不能使用分组中的计算函数进行筛选
+    +  HAVING 可以使用分组中的计算函数，在最后的结果集中进行筛选，执行效率低
      
     
 #### Mysql知识点
@@ -336,8 +341,8 @@ MySQL学习路线
         + 执行器：在执行之前需要判断该用户是否具备权限，如果具备权限就执行SQL查询并返回结果。
     
 #### MySQL学习路线
-1. [零基础入门](https://coding.imooc.com/class/332.html)
-2. [MySQL必知必会](https://time.geekbang.org/column/intro/100073201?tab=catalog)
+1. [零基础入门](https://coding.imooc.com/class/332.html)[12小时]
+2. [MySQL必知必会](https://time.geekbang.org/column/intro/100073201?tab=catalog)[12小时]
 3. 必知必会
     1. [SQL必知必会](https://time.geekbang.org/column/intro/100073201)
     2. 书籍：MySQL必知必会

@@ -327,6 +327,15 @@ MySQL学习路线
     +  where 先筛选数据再关联，执行效率高，不能使用分组中的计算函数进行筛选
     +  HAVING 可以使用分组中的计算函数，在最后的结果集中进行筛选，执行效率低
 + 聚合函数 SUM AVG MAX MIN COUNT
++ 时间函数
+    + EXTRACT ：获取日期时间中指定的值
+    + HOUR:获取小时
+    + YEAR: 获取年份
+    + MONTH：获取月份
+    + DAY ： 获取日
+    + MINUTE：获取分钟
+    + SECOND： 获取秒
+    
     
      
     

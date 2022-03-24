@@ -335,8 +335,33 @@ MySQL学习路线
     + DAY ： 获取日
     + MINUTE：获取分钟
     + SECOND： 获取秒
-    
-    
+    + DATE_ADD():计算从某个时间点出发过去或未来一段时间间隔的时间
+    + DDDATE()：与DATE_ADD()一样
+    + DATE_SUB():与DATE_ADD()类似，但是方向相反
+    + SUBDATE()： 与DATE_SUB()一致
++ 字符串函数及条件判断函数
+    + SUBSTR(s,n) 获取从字符串s的第n个位置开始，到s结尾的子字符串
+    + MID(s,n,len) 从字符串s的第n个位置,获取长度为len的子字符串
+    + TRIM(s1 from s) 除去字符串s的两端所有的字符串s1
+    + LTRIM(s) 除去字符串s左边的所有空格
+    + RTRIM(s) 除去字符串s右边的所有空格
+    + IFNULL(V1,V2) 如果V1值不为空值，则返回V1,否则返回V2
+    + IF(表达式,V1,V2) 如果表达式为真，则返回V1,否则返回V2
++ 索引
+    + 索引:CREATE INDEX index_trans on demo.trans(transdate)
+    + 组合索引
+        + CREATE TABLE 表名(字段 数据类型, ….{ INDEX | KEY } 索引名(字段1，字段2，...) )
+        + ALTER TABLE 表名 ADD { INDEX | KEY } 索引名 (字段1，字段2，...);
+    + 删除索引
+        + DROP INDEX 索引名 ON 表名;
+        + ALTER TABLE 表名 DROP PRIMARY KEY；
++ 事务
+    + START TRANSACTION 或者 BEGIN （开始事务） 一组DML语句 COMMIT（提交事务） ROLLBACK（事务回滚）
+    + 四种隔离级别
+        + READ UNCOMMITTED：可以读取事务中还未提交的被更改的数据。
+        + READ COMMITTED：只能读取事务中已经提交的被更改的数据。
+        + REPEATABLE READ：表示一个事务中，对一个数据读取的值，永远跟第一次读取的值一致，不受其他事务中数据操作的影响。这也是 MySQL 的默认选项。
+        + SERIALIZABLE：表示任何一个事务，一旦对某一个数据进行了任何操作，那么，一直到这个事务结束，MySQL 都会把这个数据锁住，禁止其他事务对这个数据进行任何操作。
      
     
 #### Mysql知识点

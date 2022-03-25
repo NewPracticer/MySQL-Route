@@ -1,8 +1,29 @@
 # MySQL-Route
 
-#### 介绍
-MySQL学习路线
+#### MySQL学习路线
+1. [从零开始MySQL](https://coding.imooc.com/class/332.html)[12小时]
+2. 必知必会
+    1. [MySQL必知必会](https://time.geekbang.org/column/intro/100073201?tab=catalog)[30小时]
+        + 建议所有的SQL语句练习一遍
+    2. [SQL必知必会](https://time.geekbang.org/column/intro/100073201)
+    3. 书籍：MySQL必知必会
+3. [阿里云数据库实战](https://coding.imooc.com/class/353.html)[22小时]
+4. [Mysql45讲](https://time.geekbang.org/column/intro/100020801)
+5. 高性能Mysql
+    1. [Mysql实战进阶](https://coding.imooc.com/class/515.html)
+    2. [高性能MySQL](https://item.jd.com/11220393.html)
+    3. [深入浅出Mysql](https://item.jd.com/12574719.html)
+6. SQL练习网站：
+    1. https://www.nowcoder.com/exam/oj?tab=SQL%E7%AF%87&topicId=199
+    2. https://leetcode-cn.com/problemset/database/
 
++  推荐理由
+    + 从基础入门到必知必会，从实战再到MySQL45讲，最后落脚到高性能Mysql以及SQL的练习
+    + 必知必会推荐第一门，建议跟着所有SQL的语句练习一遍
+    + 高性能部分推荐实战进阶和深入浅出，最后是高性能MySql
+    + SQL练习是牛客网和leetcode的练习地址
+
+----------------------------以下是笔记--------------------------------------
 
 #### 从零开始MySQL 
 + 关系型数据库
@@ -362,9 +383,56 @@ MySQL学习路线
         + READ COMMITTED：只能读取事务中已经提交的被更改的数据。
         + REPEATABLE READ：表示一个事务中，对一个数据读取的值，永远跟第一次读取的值一致，不受其他事务中数据操作的影响。这也是 MySQL 的默认选项。
         + SERIALIZABLE：表示任何一个事务，一旦对某一个数据进行了任何操作，那么，一直到这个事务结束，MySQL 都会把这个数据锁住，禁止其他事务对这个数据进行任何操作。
-     
-    
-#### Mysql知识点
++ 视图
+    + 命令：
+        + CREATE [OR REPLACE] VIEW 视图名称 [(字段列表)] AS 查询语句
+        + ALTER VIEW 视图名 AS 查询语句;
+        + DESCRIBE 视图名；
+        + DROP VIEW 视图名；
+    + 优点：
+        + 视图可以简化查询
+        + 视图不保存数据，不占用数据存储的空间
+        + 视图具有隔离性。视图相当于在用户和实际的数据之间加了一层。用户不需要直接访问数据表，提高了数据表的安全性，也方便了用户查询
+        + 数据架构相对独立，即便实际表结构产生变化，也可以通过修改试图的SQL语句，使用户不受影响
+    + 缺点：
+        + 数据表结构的变更，需要及时对视图进行维护。
++ 权限管理
+    +  CREATE USER 用户名 [IDENTIFIED BY 密码];DROP USER 用户名;
+    +  GRANT 权限 ON 表名 TO 用户名;
+    +  SHOW GRANTS FOR 用户名;
++ 日志
+    +  通用查询日志
+        +  通用查询日志记录了所有用户的连接开始时间和截止时间,以及发给mysql数据库服务器的所有SQL指令
+        + show VARIABLES LIKE '%general%'
+        +  SET GLOBAL general_log = 'ON';
+    +  慢查询日志,MySQL 的配置文件“my.ini”
+        + slow-query-log=1 -- 表示开启慢查询日志，系统将会对慢查询进行记录。
+        + slow_query_log_file="GJTECH-PC-slow.log" -- 表示慢查询日志的名称是"GJTECH-PC-slow
+        + long_query_time=10 -- 表示慢查询的标准是查询执行时间超过10秒
+    + 错误日志
+        + 以在 MySQL 的配置文件“my.ini”中配置，log-error="GJTECH-PC.err"
+    + 二进制日志
+        + 查看当前正在写入的二进制日志的 SQL 语句,SHOW MASTER STATUS;
+        + 查看所有的二进制日志,SHOW BINARY LOGS; 
+        + 查看二进制日志中所有数据更新事件  SHOW BINLOG EVENTS IN 二进制文件名;
+        + 刷新二进制日志 FLUSH BINARY LOGS;
+        + mysqlbinlog 工具进行数据恢复 
+            + mysqlbinlog –start-positon=xxx –end-position=yyy 二进制文件名 | mysql -u 用户 -p
+        + 删除二进制日志  RESET MASTER;
+    + 中继日志
+        + 中继日志只在主从服务器架构的从服务器上存在。
+    + 回滚日志。回滚日志的作用是进行事务回滚
+        + SHOW VARIABLES LIKE '%innodb_max_undo_log_size%';
++ 数据备份、恢复、导入
+    + 表备份： mysqldump -u 用户 -p 密码 数据库 > 备份文件
+    + 数据库备份: mysqldump -h 服务器 -u 用户 -p 密码 --databases 数据库名称 … > 备份文件名
+    + 数据恢复： SOURCE 备份文件名
+    +  数据导入： 
+        + LOAD DATA INFILE 文件名 INTO TABLE 表名 FIELDS TERMINATED BY 字符LINES TERMINATED BY 字符;
+        + SELECT 字段列表 INTO OUTFILE 文件名称 FIELDS TERMINATED BY 字符 LINES TERMINATED BY 字符 FROM 表名;
+
+
+#### Mysql知识点 
 + MySQL中的SQL执行
     + mysql由三层组成
         + 连接层：客户端和服务器端建立连接，客户端发送sql至服务器端
@@ -376,14 +444,7 @@ MySQL学习路线
         + 优化器：在优化器中会确定SQL语句的执行路径，比如是根据全表检索，还是根据索引来检索等
         + 执行器：在执行之前需要判断该用户是否具备权限，如果具备权限就执行SQL查询并返回结果。
     
-#### MySQL学习路线
-1. [零基础入门](https://coding.imooc.com/class/332.html)[12小时]
-2. [MySQL必知必会](https://time.geekbang.org/column/intro/100073201?tab=catalog)[12小时]
-3. 必知必会
-    1. [SQL必知必会](https://time.geekbang.org/column/intro/100073201)
-    2. 书籍：MySQL必知必会
-4. [Mysql45讲](https://time.geekbang.org/column/intro/100020801)
-5. SQL练习网站：
-    1. https://www.nowcoder.com/exam/oj?tab=SQL%E7%AF%87&topicId=199
-    2. https://leetcode-cn.com/problemset/database/
+
+ 
+
 

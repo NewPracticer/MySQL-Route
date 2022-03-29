@@ -479,7 +479,12 @@
         + 当值为2时，每次提交事务的时候都将数据写入日志，但是日志每间隔1秒写入磁盘
     + 参数：InnoDB_buffer_pool_size 存储引擎使用缓存来存储索引和数据
     + 参数：InnoDB_buffer_pool_instances   InnoDB 的缓存区分成几个部分
-    
+    + 使用Performance Schema诊断系统资源问题
++ Mysql空间函数
+    +  单个值的几何类型（GEOMETRY）、点类型（POINT）、线类型（LINESTRINIG）和多边形类型（POLYGON）
+    +  包含多个值的多点类型（MULTIPOINT）、多线类型（MULTILINESTRING）、多多边形类型（MULTIPOLYGON）和几何集类型（GEOMETRYCOLLECTION）
+    +  ST_Distance_Sphere() 函数
+    +  MBRContains() 和 MBRWithin()    
 
 
 #### Mysql知识点 

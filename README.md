@@ -3,7 +3,7 @@
 #### MySQL学习路线
 1. [从零开始MySQL](https://coding.imooc.com/class/332.html)[12小时]
 2. 必知必会
-    1. [MySQL必知必会](https://time.geekbang.org/column/intro/100073201?tab=catalog)[30小时]
+    1. [MySQL必知必会](https://time.geekbang.org/column/intro/100073201?tab=catalog)[40小时]
         + 建议所有的SQL语句练习一遍
     2. [SQL必知必会](https://time.geekbang.org/column/intro/100073201)
     3. 书籍：MySQL必知必会
@@ -485,6 +485,58 @@
     +  包含多个值的多点类型（MULTIPOINT）、多线类型（MULTILINESTRING）、多多边形类型（MULTIPOLYGON）和几何集类型（GEOMETRYCOLLECTION）
     +  ST_Distance_Sphere() 函数
     +  MBRContains() 和 MBRWithin()    
+
+#### 阿里新零售数据库实战
++ 前置知识
+    + touch 命令用来创建文件 touch demo.txt
+    + vi命令用来编辑文件内容  vi demo.txt
+        + i 编辑。esc 退出。:w 保存  :q退出
+    + mkdir 命令用来创建文件夹
+    + rm 命令可以用来删除文件或者文件夹
+    + ps 命令用于查询运行中的进程
+    + kill 用来杀死进程
++ ER图
+    + 实体关系图，提供了表示实体类型，属性和关系的方法，用来描述现实世界的概念模型
++ CRUD 部分    
+    + 忽略主键重复
+        + INSERT IGNORE INTO t_dept(deptno,dname,loc)VALUES(40,'企划部','北京'),(50,'培训部','上海'),(60,'后勤部','北京'),(70,'技术部','北京'),(80,'市场部','北京');
+    + 不存在就插入，存在就更新
+        + INSERT INTO t_emp_ip(id,empno,ip)VALUES(5,8004,'192.168.99.44'),(6,8005,'192.168.99.45'),(7,8006,'192.168.99.46'),(8,8001,'192.168.99.47')ON DUPLICATE KEY UPDATE ip = VALUES(ip)
+    + 要不要使用子查询
+        + Mysql数据库默认关闭了缓存，所以每个子查询都是相关子查询
+        + 相关子查询就是要循环执行多次的子查询
+        + MyBatis等持久层框架开启了缓存功能，其中一级缓存就会保存子查询的结果,所以可以放心使用子查询。
+        + FROM子查询只会执行一次，所以不是相关子查询
+    + 外连接的JOIN条件
+        + 内连接里，查询条件写在ON子句或者WHERE子句，效果相同
+        + 外连接里，查询条件写在ON子句或者WHERE子句，效果不同
+    + 表连接修改
+        + UPDATE语句中的WHERE子查询如何改成表连接
+            + UPDATE t_emp set sal = 1000 where deptno = (select deptno from t_dept where dname = 'sales')
+            + UPDATE t_emp e join t_dept d on e.deptno = d.deptno and 
+            d.dname = 'sales' set e.sal = 10000,d.dname = '销售部'
+        + DELETE子句的修改
+            + DELETE e,d from t_emp e join t_dept d on e.deptno = d.deptno and d.dname = '销售部'
++ 事务机制
+    + redo日志和undo日志与事务有关
+        + mysql拷贝数据到undo日志，记录修改到redo日志，redo日志同步数据到mysql
+    + 事务是一个或者多个sql语句组成的整体，要么全部执行成功，要么全都执行失败。
+    + 事务的四个特性
+        + 原子性：一个事务中所有的操作要么全部完成，要么全部失败。
+        + 一致性：不管在任何给定的时间内，并发事务有多少，事务必须保证运行结果的一致性
+        + 隔离性： 事务不受其他并发事务的影响，默认情况下A事务，只能看到日志中该事务的相关数据
+        + 持久性： 事务一旦提交，结果便是永久性的，即便发生宕机，依然可以依靠事务日志完成数据的持久化。
++ SKU、SPU
+    + 概念
+        + SPU Standard Product Unit（标准产品单位）SPU是商品信息聚合的最小单位，是一组可复用、易检索的标准化信息的集合，该集合描述了一个产品的特性。
+        + SKU 是库存进出剂量的单位，SKU是物理上不可分割的最小存货单元
+    + 设计表
+        + 一个品类表对应N个参数表，一个品类表对应一个产品表，一个产品表对应N个商品表
+
+        
+    
+
+
 
 
 #### Mysql知识点 

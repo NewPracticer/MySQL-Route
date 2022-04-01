@@ -150,5 +150,5 @@
         + 2：总用户数：count函数计数，因为用户有重复，所以需要distinct去重，即count(distinct device_id)
         + 3：总次数：count(question_id)即可
     + select count(distinct device_id) as did_cnt, count(question_id) as question_cnt from question_practice_detail where date like "2021-08%"
-
++ 
 
